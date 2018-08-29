@@ -3,6 +3,8 @@ package ghostwolf.simplyloaders.blocks;
 import java.util.List;
 
 import ghostwolf.simplyloaders.Config;
+import ghostwolf.simplyloaders.ModGuiHandler;
+import ghostwolf.simplyloaders.SimplyloadersMod;
 import ghostwolf.simplyloaders.tileentities.TileEntityLoaderBase;
 import ghostwolf.simplyloaders.tileentities.TileEntityUnloader;
 import net.minecraft.block.state.IBlockState;
@@ -35,6 +37,8 @@ public class BlockUnloader extends BlockLoaderBase {
      		   ((TileEntityLoaderBase) te).setInputSide(side);     	      
      	   }
         }
+        
+        player.openGui(SimplyloadersMod.instance, ModGuiHandler.LOADER, world, pos.getX(), pos.getY(), pos.getZ());
 	}
 	
 	@Override

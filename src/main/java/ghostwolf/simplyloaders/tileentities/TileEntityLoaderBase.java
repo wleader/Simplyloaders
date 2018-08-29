@@ -327,10 +327,15 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 	    	return super.hasCapability(capability, facing);
 	    }
 
-	    @Override
+	    
+		@Override
 	    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 	    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-	    		return (T) itemStackHandler;
+	    
+	    		@SuppressWarnings("unchecked")
+	    		T result = (T)itemStackHandler;
+	    		
+	    		return result;
 	    	}
 	    	return super.getCapability(capability, facing);
 	    }

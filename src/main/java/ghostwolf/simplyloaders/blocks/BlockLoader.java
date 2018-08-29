@@ -4,6 +4,8 @@ package ghostwolf.simplyloaders.blocks;
 import java.util.List;
 
 import ghostwolf.simplyloaders.Config;
+import ghostwolf.simplyloaders.ModGuiHandler;
+import ghostwolf.simplyloaders.SimplyloadersMod;
 import ghostwolf.simplyloaders.tileentities.TileEntityLoader;
 import ghostwolf.simplyloaders.tileentities.TileEntityLoaderBase;
 import net.minecraft.block.properties.PropertyInteger;
@@ -40,6 +42,8 @@ public class BlockLoader extends BlockLoaderBase {
        		   ((TileEntityLoaderBase) te).setOutputSide(side);
        	   }
           }
+          
+          player.openGui(SimplyloadersMod.instance, ModGuiHandler.LOADER, world, pos.getX(), pos.getY(), pos.getZ());
 	}
 	
 	@Override
