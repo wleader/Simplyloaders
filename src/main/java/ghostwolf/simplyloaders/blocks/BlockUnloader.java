@@ -3,22 +3,11 @@ package ghostwolf.simplyloaders.blocks;
 import java.util.List;
 
 import ghostwolf.simplyloaders.Config;
-import ghostwolf.simplyloaders.Reference;
-import ghostwolf.simplyloaders.creativetabs.SimplyloadersTab;
 import ghostwolf.simplyloaders.tileentities.TileEntityLoaderBase;
 import ghostwolf.simplyloaders.tileentities.TileEntityUnloader;
-import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -26,16 +15,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockUnloader extends BlockLoaderBase {
 	
-	public BlockUnloader() {
-		super("unloader", "unloader");
+	public static final String BLOCK_ID = "unloader";
 	
+	public BlockUnloader() {
+		super(BLOCK_ID);
 	}
 
 	@Override
@@ -51,4 +37,35 @@ public class BlockUnloader extends BlockLoaderBase {
         }
 	}
 	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
+		return new TileEntityUnloader();
+	}
+	
+	@Override
+	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+		
+		TileEntity te = blockAccess.getTileEntity(pos);
+	    if (te instanceof TileEntityLoaderBase) {
+	        if (((TileEntityLoaderBase) te).isEmittingRedstone ) {
+        		if (Config.UnloaderEmitsToAllNearbyBlocks) {
+	        		return 15;
+	        	} else {
+	        		if ( side.getOpposite() == ((TileEntityLoaderBase) te).getOutputSide()) {
+	        			return 15;
+	        		}
+	        	}
+	        } 
+	    } 
+		return 0;
+	}
+	
+	@Override
+	public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
+		tooltip.add("\u00A77" + "Place unloader under rails, to unload items from passing carts");
+		tooltip.add("\u00A77" + "Place chest below unloader, to store the unloaded items in");
+		tooltip.add("");
+		tooltip.add("\u00A77" + "Right click with empty hand to change output");
+		tooltip.add("\u00A77" + "Shift-Right click with empty hand to change input");
+	}
 }

@@ -23,7 +23,7 @@ public class SimplyloadersMod {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
-        proxy.init(e);
+		proxy.init(e);
     }
 
     @Mod.EventHandler

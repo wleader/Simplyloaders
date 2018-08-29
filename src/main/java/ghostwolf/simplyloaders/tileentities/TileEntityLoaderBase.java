@@ -7,27 +7,21 @@ import ghostwolf.simplyloaders.Config;
 import ghostwolf.simplyloaders.init.ModBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityMinecartChest;
-import net.minecraft.entity.item.EntityMinecartHopper;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class TileEntityLoaderBase extends TileEntity implements ICapabilityProvider, ITickable{
+public abstract class TileEntityLoaderBase extends TileEntity implements ICapabilityProvider, ITickable{
 	
 	public boolean isEmittingRedstone = false;
 	public int transferRate = Config.LoaderTransferRate;
@@ -122,13 +116,13 @@ public class TileEntityLoaderBase extends TileEntity implements ICapabilityProvi
 				// found item
 				
 				ItemStack extractedItems = chest.extractItem(i, transferRate, true);
-				//attemps to add the item to the cart until its succesfull, if its fails assume cart is full and enable redstone
+				//Attempt to add the item to the cart until its successful, if its fails assume cart is full and enable redstone
 				for (int x = 0; x < cart.getSlots(); x++) {
 					ItemStack insertedItems = cart.insertItem(x, extractedItems, true);
 					if (insertedItems.isEmpty()) {
-						//insertion successfull proceed to add item
+						//insertion successful proceed to add item
 						ItemStack exI = chest.extractItem(i, transferRate, false);
-						ItemStack inI = cart.insertItem(x, exI, false);
+						cart.insertItem(x, exI, false);
 						itemMoved = true;
 						break;
 					}

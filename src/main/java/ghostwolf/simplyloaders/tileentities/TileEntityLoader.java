@@ -1,15 +1,7 @@
 package ghostwolf.simplyloaders.tileentities;
 
-import ghostwolf.simplyloaders.init.ModBlocks;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityMinecartChest;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 

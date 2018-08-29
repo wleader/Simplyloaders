@@ -1,49 +1,32 @@
 package ghostwolf.simplyloaders.blocks;
 
+
 import java.util.List;
 
 import ghostwolf.simplyloaders.Config;
-import ghostwolf.simplyloaders.Reference;
-import ghostwolf.simplyloaders.creativetabs.SimplyloadersTab;
 import ghostwolf.simplyloaders.tileentities.TileEntityLoader;
 import ghostwolf.simplyloaders.tileentities.TileEntityLoaderBase;
-import ghostwolf.simplyloaders.tileentities.TileEntityUnloader;
-import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockLoader extends BlockLoaderBase {
 
+	public static final String BLOCK_ID = "loader";
+	
 	public static final PropertyInteger inputSide = PropertyInteger.create("inputside", 0, 6);
 	public static final PropertyInteger outputSide = PropertyInteger.create("outputside", 0, 6);
 	
 	public BlockLoader() {
-		super("loader","loader");
+		super(BLOCK_ID);
 	}
 	
 	@Override
@@ -57,6 +40,37 @@ public class BlockLoader extends BlockLoaderBase {
        		   ((TileEntityLoaderBase) te).setOutputSide(side);
        	   }
           }
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
+		return new TileEntityLoader();
+	}
+	
+	@Override
+	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+		TileEntity te = blockAccess.getTileEntity(pos);
+	    if (te instanceof TileEntityLoaderBase) {
+	        if (((TileEntityLoaderBase) te).isEmittingRedstone ) {
+        		if (Config.LoaderEmitsToAllNearbyBlocks) {
+        			return 15;
+        		} else {
+        			if ( side.getOpposite() == ((TileEntityLoaderBase) te).getOutputSide()) {
+        				return 15;
+        			}
+        		}
+	        } 
+	    } 
+		return 0;
+	}
+	
+	@Override
+	public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
+		tooltip.add("\u00A77" + "Place loader under rails, to load items into passing carts");
+		tooltip.add("\u00A77" + "Place chest below loader, with the items you want to load");
+		tooltip.add("");
+		tooltip.add("\u00A77" + "Right click with empty hand to change output");
+		tooltip.add("\u00A77" + "Shift-Right click with empty hand to change input");
 	}
 	
 }

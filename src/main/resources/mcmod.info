@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
+  "modid": "Simplyloaders",
+  "name": "Simply Loaders",
   "description": "A mod that adds ways to add and remove items from chestcarts",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ghostwolf_"],
-  "credits": "Ghostwolf",
+  "authorList": ["ghostwolf_", "wleader"],
+  "credits": "Ghostwolf, wleader",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
