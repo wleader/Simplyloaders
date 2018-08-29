@@ -282,6 +282,7 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 	    public void handleUpdateTag(NBTTagCompound tag) {
 	    	readFromNBT(tag);
 	    	setBlockState();
+	    	world.markBlockRangeForRenderUpdate(pos, pos);
 	    }
 	    
 	    @Override
