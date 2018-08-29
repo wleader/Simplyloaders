@@ -3,6 +3,9 @@ package ghostwolf.simplyloaders.tileentities;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ghostwolf.simplyloaders.Config;
 import ghostwolf.simplyloaders.init.ModBlocks;
 import net.minecraft.block.state.IBlockState;
@@ -17,14 +20,22 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public abstract class TileEntityLoaderBase extends TileEntity implements ICapabilityProvider, ITickable{
 	
 	public boolean isEmittingRedstone = false;
 	public int transferRate = Config.LoaderTransferRate;
+	
+	private ItemStackHandler itemStackHandler;
+	
+	public TileEntityLoaderBase() {
+		itemStackHandler = new ItemStackHandler(9);
+	}
 	
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
@@ -201,22 +212,28 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 	        } else {
 	        	outputSide = null;
 	        }
+	        
+	        itemStackHandler.deserializeNBT(compound.getCompoundTag("ItemStackHandler"));
 	    }
 
 	    @Override
 	    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 	        super.writeToNBT(compound);
-	       if (inputSide != null) {
-	    	   compound.setString("inputside", inputSide.toString());
-	       } else {
-	    		  compound.setString("inputside", "none"); 
-	    	   }
+	      
+	        if (inputSide != null) {
+	    	    compound.setString("inputside", inputSide.toString());
+	        } else {
+	    		compound.setString("inputside", "none"); 
+	    	}
 	       
-	       if (outputSide != null) {
-	    	   compound.setString("outputside", outputSide.toString());
-	       } else {
-	    	   compound.setString("outputside", "none");
-	       }
+	        if (outputSide != null) {
+	        	compound.setString("outputside", outputSide.toString());
+	        } else {
+	    	    compound.setString("outputside", "none");
+	        }
+	        
+	        compound.setTag("ItemStackHandler", itemStackHandler.serializeNBT());
+	        	        
 	        return compound;
 	    }
 	    
@@ -301,6 +318,21 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 	         return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
 	    }
 	    
+	    @Override
+	    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+	    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+	    		return true;
+	    	}
+	    	
+	    	return super.hasCapability(capability, facing);
+	    }
+
+	    @Override
+	    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+	    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+	    		return (T) itemStackHandler;
+	    	}
+	    	return super.getCapability(capability, facing);
+	    }
 	    
-	      
 }

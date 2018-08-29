@@ -19,6 +19,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public abstract class BlockLoaderBase extends Block  {
 	
@@ -113,6 +116,13 @@ public abstract class BlockLoaderBase extends Block  {
     public void onActivated (World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
     		EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
     	//override this to handle on clicked
+    }
+    
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+    	TileEntity te = worldIn.getTileEntity(pos);
+    	IItemHandler itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null); 
+    	super.breakBlock(worldIn, pos, state);
     }
     
 }
