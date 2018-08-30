@@ -1,7 +1,6 @@
 package ghostwolf.simplyloaders.blocks;
 
 import ghostwolf.simplyloaders.Reference;
-import ghostwolf.simplyloaders.init.ModBlocks;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -13,10 +12,12 @@ public class GuiBase extends GuiContainer {
 	private static final ResourceLocation BG_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/loader.png");
 	
 	private InventoryPlayer inventoryPlayer;
+	private String myUnlocalizedName;
 	
-	public GuiBase(Container inventorySlotsIn, InventoryPlayer inventoryPlayer) {
+	public GuiBase(Container inventorySlotsIn, InventoryPlayer inventoryPlayer, String unlocalizedName) {
 		super(inventorySlotsIn);
 		this.inventoryPlayer = inventoryPlayer;
+		this.myUnlocalizedName = unlocalizedName;
 	}
 
 	@Override
@@ -32,7 +33,7 @@ public class GuiBase extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		
 		// TODO Make this work for unloader
-		String name = I18n.format(ModBlocks.loader.getUnlocalizedName() + ".name");
+		String name = I18n.format(myUnlocalizedName + ".name");
 		fontRendererObj.drawString(name, xSize / 2 - fontRendererObj.getStringWidth(name) / 2, 6, 0x404040);
 		fontRendererObj.drawString(inventoryPlayer.getDisplayName().getUnformattedText(), 8, ySize - 94, 0x404040);
 	}

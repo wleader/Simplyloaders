@@ -1,5 +1,9 @@
 tile.simplyloaders.loader.name=Loader
-tile.simplyloaders.unloader.name=Unloader
-tile.simplyloaders.advancedunloader.name=Advanced unloader
+tile.simplyloaders.loader.tip1=Place adjacent to rails, to load items into passing carts.
+tile.simplyloaders.loader.tip2=Use powered rails to hold the cart while loading.
+tile.simplyloaders.loader.tip3=Shift-Right click with empty hand to change cart side.
 
-itemGroup.simplyloadersTab=Simply loaders
+tile.simplyloaders.unloader.name=Unloader
+tile.simplyloaders.unloader.tip1=Place adjacent to rails, to unload items from passing carts.
+tile.simplyloaders.unloader.tip2=Use powered rails to hold the cart while unloading.
+tile.simplyloaders.unloader.tip3=Shift-Right click with empty hand to change cart side.

@@ -16,13 +16,16 @@ public class ContainerBase extends Container{
 	public ContainerBase(InventoryPlayer playerInv, final TileEntityLoaderBase entity) {
 		IItemHandler inventory = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		
-		// TODO - loop to have 9 slots.
-		addSlotToContainer(new SlotItemHandler(inventory, 0, 80, 35) {
-			@Override
-			public void onSlotChanged() {
-				entity.markDirty();
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				addSlotToContainer(new SlotItemHandler(inventory,  j + i * 3, 62 + j * 18, 17 + i * 18) {
+					@Override
+					public void onSlotChanged() {
+						entity.markDirty();
+					}
+				});
 			}
-		});
+		}
 	
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 9; j++) {

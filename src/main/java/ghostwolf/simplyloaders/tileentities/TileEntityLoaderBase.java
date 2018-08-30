@@ -42,46 +42,45 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 		return (oldState.getBlock() != newState.getBlock());
 	}
 	
-	public EnumFacing inputSide = EnumFacing.DOWN;
-	public EnumFacing outputSide = EnumFacing.UP;
+	public EnumFacing minecartSide = EnumFacing.NORTH;
 		
-	public TileEntity getChest () {
-		
-		if (inputSide == null) {
-			return null;
-		}
-		
-		TileEntity Te = null;
-		
-		if (inputSide == EnumFacing.UP) {
-			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()));
-		} else if (inputSide == EnumFacing.DOWN) {
-			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
-		} else if (inputSide == EnumFacing.NORTH) {
-			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY(), pos.getZ() - 1));
-		} else if (inputSide == EnumFacing.SOUTH) {
-			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY() , pos.getZ() + 1));
-		}else if (inputSide == EnumFacing.WEST) {
-			 Te = getWorld().getTileEntity(new BlockPos(pos.getX() - 1, pos.getY() , pos.getZ()));
-		} else {
-			Te = getWorld().getTileEntity(new BlockPos(pos.getX() + 1, pos.getY() , pos.getZ()));
-		}
-		
-		if (Te != null) {
-			IItemHandler itemHandler = Te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inputSide.getOpposite());
-			if (itemHandler != null) {
-				return Te;
-			}
-		}
-		if (! isEmittingRedstone) {
-			updateRedstone(true);
-		}
-		return null;
-	}
+//	public TileEntity getChestRemove () {
+//		
+//		if (inputSide == null) {
+//			return null;
+//		}
+//		
+//		TileEntity Te = null;
+//		
+//		if (inputSide == EnumFacing.UP) {
+//			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()));
+//		} else if (inputSide == EnumFacing.DOWN) {
+//			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()));
+//		} else if (inputSide == EnumFacing.NORTH) {
+//			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY(), pos.getZ() - 1));
+//		} else if (inputSide == EnumFacing.SOUTH) {
+//			 Te = getWorld().getTileEntity(new BlockPos(pos.getX(), pos.getY() , pos.getZ() + 1));
+//		}else if (inputSide == EnumFacing.WEST) {
+//			 Te = getWorld().getTileEntity(new BlockPos(pos.getX() - 1, pos.getY() , pos.getZ()));
+//		} else {
+//			Te = getWorld().getTileEntity(new BlockPos(pos.getX() + 1, pos.getY() , pos.getZ()));
+//		}
+//		
+//		if (Te != null) {
+//			IItemHandler itemHandler = Te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inputSide.getOpposite());
+//			if (itemHandler != null) {
+//				return Te;
+//			}
+//		}
+//		if (! isEmittingRedstone) {
+//			updateRedstone(true);
+//		}
+//		return null;
+//	}
 	
-	public boolean chestHasItem (IItemHandler chest) {
-		for (int i = 0; i < chest.getSlots(); i++) {
-			ItemStack inslot = chest.getStackInSlot(i);
+	public boolean chestHasItem (IItemHandler inventory) {
+		for (int i = 0; i < inventory.getSlots(); i++) {
+			ItemStack inslot = inventory.getStackInSlot(i);
 			if (inslot != null && ! inslot.isEmpty()) {
 				return true;
 			}
@@ -90,20 +89,20 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 	}
 	
 	public EntityMinecart getChestCart () {
-		if (outputSide == null) {
+		if (minecartSide == null) {
 			return null;
 		}
 		AxisAlignedBB box = new AxisAlignedBB(getPos(),getPos());
 
-		if (outputSide == EnumFacing.UP) {
+		if (minecartSide == EnumFacing.UP) {
 			box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1);
-		} else if (outputSide == EnumFacing.DOWN) {
+		} else if (minecartSide == EnumFacing.DOWN) {
 			box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() - 1, pos.getZ() + 1);
-		} else if (outputSide == EnumFacing.NORTH) {
+		} else if (minecartSide == EnumFacing.NORTH) {
 			box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() -1);
-		} else if (outputSide == EnumFacing.SOUTH) {
+		} else if (minecartSide == EnumFacing.SOUTH) {
 			box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 2);
-		}else if (outputSide == EnumFacing.WEST) {
+		}else if (minecartSide == EnumFacing.WEST) {
 			box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() - 1, pos.getY() + 1 , pos.getZ() + 1);
 		} else  {
 			box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 2, pos.getY() + 1, pos.getZ() + 1);
@@ -119,20 +118,20 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 	}
 	
 	//chests represents input chest and cart represents output chest so its moves items from value1 to value2
-	public void moveItem (IItemHandler chest, IItemHandler cart) {
+	public void moveItem (IItemHandler inventory, IItemHandler cart) {
 		
 		boolean itemMoved = false;
-		for (int i = 0; i < chest.getSlots(); i++) {
-			if (! chest.getStackInSlot(i).isEmpty()) {
+		for (int i = 0; i < inventory.getSlots(); i++) {
+			if (! inventory.getStackInSlot(i).isEmpty()) {
 				// found item
 				
-				ItemStack extractedItems = chest.extractItem(i, transferRate, true);
+				ItemStack extractedItems = inventory.extractItem(i, transferRate, true);
 				//Attempt to add the item to the cart until its successful, if its fails assume cart is full and enable redstone
 				for (int x = 0; x < cart.getSlots(); x++) {
 					ItemStack insertedItems = cart.insertItem(x, extractedItems, true);
 					if (insertedItems.isEmpty()) {
 						//insertion successful proceed to add item
-						ItemStack exI = chest.extractItem(i, transferRate, false);
+						ItemStack exI = inventory.extractItem(i, transferRate, false);
 						cart.insertItem(x, exI, false);
 						itemMoved = true;
 						break;
@@ -173,12 +172,9 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 		transferRate = rate;
 	}
 	
-	public void setInputSide (EnumFacing side) {
-		if (side != inputSide) {
-			if (side == outputSide) {
-				outputSide = null;
-			}
-			inputSide = side;
+	public void setMinecartSide (EnumFacing side) {
+		if (side != minecartSide) {
+			minecartSide = side;
 			updateNeighbors();
 			markDirty();
 			setBlockState();
@@ -186,158 +182,109 @@ public abstract class TileEntityLoaderBase extends TileEntity implements ICapabi
 
 	}
 	
-	public void setOutputSide (EnumFacing side) {
-		if (side != outputSide) {
-			if (side == inputSide) {
-				inputSide = null;
-			}
-			outputSide = side;
-			updateNeighbors();
-			markDirty();
-			setBlockState();
-		}
-	}
-	
-	 @Override
-	    public void readFromNBT(NBTTagCompound compound) {
-	        super.readFromNBT(compound);
-	        if (compound.getString("inputside") != "none") {
-	        	inputSide = EnumFacing.byName(compound.getString("inputside"));
-	        } else {
-	        	inputSide = null;
-	        }
-	        
-	        if (compound.getString("outputside") != "none") {
-	        	outputSide = EnumFacing.byName(compound.getString("outputside"));
-	        } else {
-	        	outputSide = null;
-	        }
-	        
-	        itemStackHandler.deserializeNBT(compound.getCompoundTag("ItemStackHandler"));
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+	    super.readFromNBT(compound);
+	    if (compound.getString("minecartside") != "none") {
+	    	minecartSide = EnumFacing.byName(compound.getString("minecartside"));
+	    } else {
+	       	minecartSide = null;
 	    }
+	        
+	    itemStackHandler.deserializeNBT(compound.getCompoundTag("ItemStackHandler"));
+	}
 
-	    @Override
-	    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-	        super.writeToNBT(compound);
-	      
-	        if (inputSide != null) {
-	    	    compound.setString("inputside", inputSide.toString());
-	        } else {
-	    		compound.setString("inputside", "none"); 
-	    	}
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	    super.writeToNBT(compound);
+	    if (minecartSide != null) {
+	        compound.setString("minecartside", minecartSide.toString());
+	    } else {
+	    	compound.setString("minecartside", "none"); 
+	    }
 	       
-	        if (outputSide != null) {
-	        	compound.setString("outputside", outputSide.toString());
-	        } else {
-	    	    compound.setString("outputside", "none");
-	        }
 	        
-	        compound.setTag("ItemStackHandler", itemStackHandler.serializeNBT());
+	    compound.setTag("ItemStackHandler", itemStackHandler.serializeNBT());
 	        	        
-	        return compound;
-	    }
+	    return compound;
+	}
 	    
-	    public EnumFacing getInputSide () {
-	    	return inputSide;
-	    }
+    public EnumFacing getMinecartSide () {
+    	return minecartSide;
+    }
 	    
-	    public EnumFacing getOutputSide () {
-	    	return outputSide;
-	    }
+    private void updateNeighbors () {
+    	getWorld().notifyNeighborsOfStateChange(getPos(), ModBlocks.loader, false);
+    }
 	    
+	public int minecartSideToInt () {
+    	if (minecartSide == null) {
+    		return 0;
+    	} else if (minecartSide == EnumFacing.UP) {
+    		return 1;
+    	} else if (minecartSide == EnumFacing.DOWN) {
+    		return 2;
+    	} else if (minecartSide == EnumFacing.EAST) {
+    		return 3;
+    	} else if (minecartSide == EnumFacing.WEST) {
+    		return 4;
+    	} else if (minecartSide == EnumFacing.SOUTH) {
+    		return 5;
+    	} else if (minecartSide == EnumFacing.NORTH) {
+    		return 6;
+    	}
+    	
+    	return 0;
+    }
 	    
-	    private void updateNeighbors () {
-	    	getWorld().notifyNeighborsOfStateChange(getPos(), ModBlocks.loader, false);
-	    }
+    public void setBlockState() {    	
+    	IBlockState state = getWorld().getBlockState(getPos());
+    	getWorld().notifyBlockUpdate(getPos(), state, state, 3);
+    }
+    
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+    	readFromNBT(tag);
+    	setBlockState();
+    	world.markBlockRangeForRenderUpdate(pos, pos);
+    }
+    
+    @Override
+    public NBTTagCompound getUpdateTag() {
+    	return writeToNBT(new NBTTagCompound());
+    }
+    
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+    	super.onDataPacket(net, pkt);
+    	handleUpdateTag(pkt.getNbtCompound());
+    }
+ 
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+         return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
+    }
 	    
-	    public int inputSideToInt () {
-	    	if (inputSide == null) {
-	    		return 0;
-	    	} else if (inputSide == EnumFacing.UP) {
-	    		return 1;
-	    	} else if (inputSide == EnumFacing.DOWN) {
-	    		return 2;
-	    	} else if (inputSide == EnumFacing.EAST) {
-	    		return 3;
-	    	} else if (inputSide == EnumFacing.WEST) {
-	    		return 4;
-	    	} else if (inputSide == EnumFacing.SOUTH) {
-	    		return 5;
-	    	} else if (inputSide == EnumFacing.NORTH) {
-	    		return 6;
-	    	}
-	    	
-	    	return 0;
-	    }
-	    
-	    public int outputSideToInt () {
-	    	if (outputSide == null) {
-	    		return 0;
-	    	} else if (outputSide == EnumFacing.UP) {
-	    		return 1;
-	    	} else if (outputSide == EnumFacing.DOWN) {
-	    		return 2;
-	    	} else if (outputSide == EnumFacing.EAST) {
-	    		return 3;
-	    	} else if (outputSide == EnumFacing.WEST) {
-	    		return 4;
-	    	} else if (outputSide == EnumFacing.SOUTH) {
-	    		return 5;
-	    	} else if (outputSide == EnumFacing.NORTH) {
-	    		return 6;
-	    	}
-	    	
-	    	return 0;
-	    }
-	    
-	    public void setBlockState() {    	
-	    	IBlockState state = getWorld().getBlockState(getPos());
-	    	getWorld().notifyBlockUpdate(getPos(), state, state, 3);
-	    }
-	    
-	    @Override
-	    public void handleUpdateTag(NBTTagCompound tag) {
-	    	readFromNBT(tag);
-	    	setBlockState();
-	    	world.markBlockRangeForRenderUpdate(pos, pos);
-	    }
-	    
-	    @Override
-	    public NBTTagCompound getUpdateTag() {
-	    	return writeToNBT(new NBTTagCompound());
-	    }
-	    
-	    @Override
-	    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-	    	super.onDataPacket(net, pkt);
-	    	handleUpdateTag(pkt.getNbtCompound());
-	    }
-	 
-	    @Override
-	    public SPacketUpdateTileEntity getUpdatePacket() {
-	         return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
-	    }
-	    
-	    @Override
-	    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-	    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-	    		return true;
-	    	}
-	    	
-	    	return super.hasCapability(capability, facing);
-	    }
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+    		return true;
+    	}
+    	
+    	return super.hasCapability(capability, facing);
+    }
 
-	    
-		@Override
-	    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-	    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-	    
-	    		@SuppressWarnings("unchecked")
-	    		T result = (T)itemStackHandler;
-	    		
-	    		return result;
-	    	}
-	    	return super.getCapability(capability, facing);
-	    }
+    
+	@Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+    	if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+    
+    		@SuppressWarnings("unchecked")
+    		T result = (T)itemStackHandler;
+    		
+    		return result;
+    	}
+    	return super.getCapability(capability, facing);
+    }
 	    
 }

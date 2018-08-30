@@ -1,19 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "CCC",
-    "CcC",
-    "ChC"
+    "iri",
+    "ici",
+    "ihi"
   ],
   "key": {
-    "C": {
-      "item": "minecraft:cobblestone"
+    "i": {
+      "item": "minecraft:iron_ingot"
     },
     "c": {
       "item": "minecraft:chest"
     },
     "h": {
       "item": "minecraft:hopper"
+    },
+    "r": {
+      "item": "minecraft:redstone"
     }
   },
   "result": {

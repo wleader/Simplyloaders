@@ -17,10 +17,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @Mod.EventBusSubscriber
 public class ModBlocks {
 	
-	@GameRegistry.ObjectHolder(Reference.MOD_ID + ":" + BlockUnloader.BLOCK_ID)
+	@GameRegistry.ObjectHolder(Reference.MOD_ID + ":loader")
 	public static BlockUnloader unloader;
 	
-	@GameRegistry.ObjectHolder(Reference.MOD_ID + ":" + BlockLoader.BLOCK_ID)
+	@GameRegistry.ObjectHolder(Reference.MOD_ID + ":unloader")
 	public static BlockLoader loader;
 		
 	public static void init () {

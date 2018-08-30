@@ -1,7 +1,8 @@
 package ghostwolf.simplyloaders.blocks;
 
+import java.util.List;
+
 import ghostwolf.simplyloaders.Reference;
-import ghostwolf.simplyloaders.SimplyloadersMod;
 import ghostwolf.simplyloaders.tileentities.TileEntityLoaderBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -9,6 +10,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,8 +29,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class BlockLoaderBase extends Block  {
 	
-	public static final PropertyInteger inputSide = PropertyInteger.create("inputside", 0, 6);
-	public static final PropertyInteger outputSide = PropertyInteger.create("outputside", 0, 6);
+	public static final PropertyInteger minecartSide = PropertyInteger.create("minecartside", 0, 6);
 
 	public BlockLoaderBase(String name) {
 		super(Material.IRON);
@@ -66,7 +68,7 @@ public abstract class BlockLoaderBase extends Block  {
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     	TileEntity te = worldIn.getTileEntity(pos);
      	if (te instanceof TileEntityLoaderBase) {
-     		return state.withProperty(inputSide, ((TileEntityLoaderBase) te).inputSideToInt() ).withProperty(outputSide, ((TileEntityLoaderBase) te).outputSideToInt());
+     		return state.withProperty(minecartSide, ((TileEntityLoaderBase) te).minecartSideToInt());
  
      	} else {
      		return state;
@@ -75,7 +77,7 @@ public abstract class BlockLoaderBase extends Block  {
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, inputSide, outputSide);
+        return new BlockStateContainer(this, minecartSide);
     }
     
     @Override
@@ -130,4 +132,11 @@ public abstract class BlockLoaderBase extends Block  {
     	super.breakBlock(worldIn, pos, state);
     }
     
+	@Override
+	public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
+		String name = this.getUnlocalizedName();
+		tooltip.add("\u00A77" + I18n.format(name + ".tip1"));
+		tooltip.add("\u00A77" + I18n.format(name + ".tip2"));
+		tooltip.add("\u00A77" + I18n.format(name + ".tip3"));
+	}
 }
